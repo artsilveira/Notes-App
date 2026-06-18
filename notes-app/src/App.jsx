@@ -12,7 +12,7 @@ function App() {
       .then(response => response.json())
       .then(data => {
         setNotes(data)
-        setSelectedNote(data[o] || null)
+        setSelectedNote(data[0] || null)
       })
   }, [])
 
@@ -35,12 +35,17 @@ function App() {
     })
   }
 
+  const handleUpdateNote = (updatedNote) => {
+    setNotes(notes.map(n => n.id === updatedNote.id ? updatedNote : n))
+    setSelectedNote(updatedNote)
+  }
+
   return (
     <div className="flex">
       <Sidebar onNewNote={handleNewNote} />
       <NoteList notes={notes} onSelectNote={setSelectedNote} />
       {selectedNote ? (
-        <Editor note={selectedNote} />
+        <Editor note={selectedNote} onUpdateNote={handleUpdateNote} />
       ) : ( 
         <div className="flex-1 bg-gray-700 h-screen p-6 text-gray-400">
           Nenhuma nota ainda. Crie a primeira!
