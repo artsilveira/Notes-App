@@ -16,9 +16,28 @@ function App() {
       })
   }, [])
 
+  const handleNewNote = () => {
+    const newNote = {
+      title: 'Nova nota', 
+      content: '',
+      date: 'Hoje'
+    }
+
+    fetch('http://localhost:3001/notes', {
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newNote)
+    })
+    .then(response => response.json())
+    .then(createdNote => {
+      setNotes([createdNote, ...notes])
+      setSelectedNote(createdNote)
+    })
+  }
+
   return (
     <div className="flex">
-      <Sidebar />
+      <Sidebar onNewNote={handleNewNote} />
       <NoteList notes={notes} onSelectNote={setSelectedNote} />
       {selectedNote ? (
         <Editor note={selectedNote} />
