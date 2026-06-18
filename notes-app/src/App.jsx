@@ -1,23 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from './components/Sidebar'
 import NoteList from './components/NoteList'
 import Editor from './components/Editor'
 
-const initialNotes = [
-  { id: 1, title: 'Reunião de planejamento', date: 'Hoje', content: 'Definir metas do trimestre...' },
-  { id: 2, title: 'Livros para ler', date: 'Ontem', content: 'Atomic Habits, Deep Work...' },
-  { id: 3, title: 'Ideias para o projeto', date: '14 jun', content: 'Dashboard com filtros...' },
-]
-
 function App() {
-  const [notes, setNotes] = useState(initialNotes)
-  const [selectedNote, setSelectedNote] = useState(initialNotes[0])
+  const [notes, setNotes] = useState([])
+  const [selectedNote, setSelectedNote] = useState(null)
+
+  useEffect(() => {
+    fetch('http://localhost:3001/notes')
+      .then(response => response.json())
+      .then(data => {
+        setNotes(data)
+        setSelectedNote(data[o] || null)
+      })
+  }, [])
 
   return (
     <div className="flex">
       <Sidebar />
       <NoteList notes={notes} onSelectNote={setSelectedNote} />
-      <Editor note={selectedNote} />
+      {selectedNote ? (
+        <Editor note={selectedNote} />
+      ) : ( 
+        <div className="flex-1 bg-gray-700 h-screen p-6 text-gray-400">
+          Nenhuma nota ainda. Crie a primeira!
+        </div>
+      )}
     </div>
   )
 }
