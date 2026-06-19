@@ -40,10 +40,24 @@ function App() {
     setSelectedNote(updatedNote)
   }
 
+  const handleDeleteNote = (id) => {
+    fetch(`http://localhost:3001/notes/${id}`, {
+      method: 'DELETE'
+    })
+      .then(() => {
+        const remainingNotes = notes.filter(n => n.id !== id)
+        setNotes(remainingNotes)
+
+        if (selectedNote?.id === id) {
+          setSelectedNote(remainingNotes[0] || null)
+        }
+      })
+  }
+
   return (
     <div className="flex">
       <Sidebar onNewNote={handleNewNote} />
-      <NoteList notes={notes} onSelectNote={setSelectedNote} />
+      <NoteList notes={notes} onSelectNote={setSelectedNote} onDeleteNote={handleDeleteNote} />
       {selectedNote ? (
         <Editor note={selectedNote} onUpdateNote={handleUpdateNote} />
       ) : ( 
