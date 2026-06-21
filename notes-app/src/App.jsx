@@ -20,7 +20,8 @@ function App() {
     const newNote = {
       title: 'Nova nota', 
       content: '',
-      date: 'Hoje'
+      date: 'Hoje',
+      category: 'Geral'
     }
 
     fetch('http://localhost:3001/notes', {

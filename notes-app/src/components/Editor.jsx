@@ -1,23 +1,27 @@
 import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 
+const CATEGORIES = ['Geral', 'Trabalho', 'Pessoal', 'Estudos']
+
 function Editor({ note, onUpdateNote }) {
   const [title, setTitle] = useState(note.title)
   const [content, setContent] = useState(note.content)
+  const [category, setCategory] = useState(note.category || 'Geral')
   const [isPreview, setIsPreview] = useState(false)
 
   useEffect(() => {
     setTitle(note.title)
     setContent(note.content)
+    setCategory(note.category || 'Geral')
   }, [note])
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (title !== note.title || content !== note.content) {
+      if (title !== note.title || content !== note.content || category !== note.category) {
         fetch(`http://localhost:3001/notes/${note.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, content, date: note.date })
+          body: JSON.stringify({ title, content, date: note.date, category })
         })
           .then(response => response.json())
           .then(updatedNote => onUpdateNote(updatedNote))
@@ -25,7 +29,7 @@ function Editor({ note, onUpdateNote }) {
     }, 800)
 
     return () => clearTimeout(timer)
-  }, [title, content])
+  }, [title, content, category])
 
   return (
     <div className="flex-1 bg-gray-700 h-screen p-6 flex flex-col">
@@ -42,6 +46,16 @@ function Editor({ note, onUpdateNote }) {
           {isPreview ? 'Editar' : 'Visualizar'}
         </button>
       </div>
+
+      <select 
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        className="mb-4 bg-gray-600 text-white text-sm rounded px-2 py-1 w-fit outline-none"
+      >
+        {CATEGORIES.map(cat => (
+          <option key={cat} value={cat}>{cat}</option>
+        ))}
+      </select>
 
       {isPreview ? (
         <div className="text-gray-300 prose prose-invert max-w-none overflow-auto">
