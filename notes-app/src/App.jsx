@@ -6,6 +6,7 @@ import Editor from './components/Editor'
 function App() {
   const [notes, setNotes] = useState([])
   const [selectedNote, setSelectedNote] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState('Todas')
 
   useEffect(() => {
     fetch('http://localhost:3001/notes')
@@ -55,10 +56,20 @@ function App() {
       })
   }
 
+  const filteredNotes = selectedCategory === 'Todas' ? notes : notes.filter(note => note.category === selectedCategory)
+
   return (
     <div className="flex">
-      <Sidebar onNewNote={handleNewNote} />
-      <NoteList notes={notes} onSelectNote={setSelectedNote} onDeleteNote={handleDeleteNote} />
+      <Sidebar 
+        onNewNote={handleNewNote}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+      />
+      <NoteList 
+        notes={filteredNotes} 
+        onSelectNote={setSelectedNote} 
+        onDeleteNote={handleDeleteNote} 
+      />
       {selectedNote ? (
         <Editor note={selectedNote} onUpdateNote={handleUpdateNote} />
       ) : ( 

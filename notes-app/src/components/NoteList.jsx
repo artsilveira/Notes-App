@@ -6,7 +6,12 @@ function NoteCard({ note, onSelectNote, onDeleteNote }) {
     >
       <div>
         <p className="text-white font-medium">{note.title}</p>
-        <p className="text-gray-400 text-sm">{note.date}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="text-gray-400 text-sm">{note.date}</p>
+          <span className="text-xs bg-gray-300 px-2 py-0.5 rounded-full">
+            {note.category}
+          </span>
+        </div>
       </div>
       <button
         onClick={(e) => {
