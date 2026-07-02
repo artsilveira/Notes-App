@@ -7,6 +7,7 @@ function App() {
   const [notes, setNotes] = useState([])
   const [selectedNote, setSelectedNote] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState('Todas')
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     fetch('http://localhost:3001/notes')
@@ -56,7 +57,12 @@ function App() {
       })
   }
 
-  const filteredNotes = selectedCategory === 'Todas' ? notes : notes.filter(note => note.category === selectedCategory)
+  const filteredNotes = notes
+    .filter(note => selectedCategory === 'Todas' || note.category === selectedCategory)
+    .filter(note => 
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.content.toLowerCase().includes(searchQuery.toLowerCase())
+    )
 
   return (
     <div className="flex">
@@ -69,6 +75,8 @@ function App() {
         notes={filteredNotes} 
         onSelectNote={setSelectedNote} 
         onDeleteNote={handleDeleteNote} 
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
       {selectedNote ? (
         <Editor note={selectedNote} onUpdateNote={handleUpdateNote} />

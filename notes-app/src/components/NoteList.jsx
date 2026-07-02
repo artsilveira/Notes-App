@@ -26,12 +26,30 @@ function NoteCard({ note, onSelectNote, onDeleteNote }) {
   )
 }
 
-function NoteList({ notes, onSelectNote, onDeleteNote }) {
+function NoteList({ notes, onSelectNote, onDeleteNote, searchQuery, onSearchChange }) {
   return (
-    <div className="w-64 bg-gray-800 h-screen p-4">
-      {notes.map(note => (
-        <NoteCard key={note.id} note={note} onSelectNote={onSelectNote} onDeleteNote={onDeleteNote} />
-      ))}
+    <div className="w-64 bg-gray-800 h-screen p-4 flex flex-col">
+      <input 
+        type="text"
+        placeholder="Buscar notas..."
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="w-full bg-gray-700 text-white text-sm rounded-lg px-3 py-2 outline-none placeholder-gray-500 mb-3"
+      />
+      <div className="flex-1 overflow-y-auto">
+        {notes.length === 0 ? (
+          <p className="text-gray-500 text-sm text-center mt-4">Nenhuma nota encontrada.</p>
+        ) : (
+          notes.map(note => (
+            <NoteCard 
+              key={note.id}
+              note={note}
+              onSelectNote={onSelectNote}
+              onDeleteNote={onDeleteNote}
+            />
+          ))
+        )}
+      </div>
     </div>
   )
 }
